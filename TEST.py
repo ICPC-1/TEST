@@ -116,6 +116,8 @@ class Test:
             print(f"\033[92m{base_name} : success\033[0m")
 
     def write_final_score(self,final_score):
+        
+        final_score = round(final_score)
         print("#####################################################")
         if final_score < 50:
             print(f"\033[91m final score: {final_score} : fail\033[0m")
