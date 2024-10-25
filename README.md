@@ -1,5 +1,6 @@
 how we can you the code :
-python3 [path/to/TEST.py] [path/to/our/code] [path/to/testcase/directory]
+
+python3 [path/to/TEST.py] [path/to/our/code] [path/to/testcase/directory] [mode]
 
 ##DEBUG MODE:##
 
