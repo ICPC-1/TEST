@@ -45,16 +45,16 @@ class TestRunner:
 
     def test_pass(self, input_file_path, answer_file_path):
         input_content = self.read_file(input_file_path)
-        expected_output = self.read_file(answer_file_path)
+        expected_output = self.read_file(answer_file_path).strip()
 
         process = subprocess.run(
-            ["python3", self.file_path],
-            input=input_content,
+            ["python3", self.file_path,input_content],
             capture_output=True,
             text=True
         )
 
         output = process.stdout.strip()
+        
         return output == expected_output
 
     def test_state(self, base_name, state):
@@ -72,7 +72,7 @@ class TestRunner:
         elif 50 <= rounded_score < 100:
             print(f"\033[92mFinal score: {rounded_score} : not bad\033[0m")
         elif rounded_score == 100:
-            print(f"\033[92mFinal score: {rounded_score} : done bravo bro\033[0m")
+            print(f"\033[92mFinal score: {rounded_score} : done, bravo bro\033[0m")
         print("#####################################################")
 
     def run_tests(self):
