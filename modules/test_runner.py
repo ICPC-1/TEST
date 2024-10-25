@@ -70,7 +70,7 @@ class TestRunner:
         if rounded_score < 50:
             print(f"\033[91mFinal score: {rounded_score} : fail\033[0m")
         elif 50 <= rounded_score < 100:
-            print(f"\033[92mFinal score: {rounded_score} : not bad\033[0m")
+            print(f"\033[93mFinal score: {rounded_score} : not bad\033[0m")
         elif rounded_score == 100:
             print(f"\033[92mFinal score: {rounded_score} : done, bravo bro\033[0m")
         print("#####################################################")
