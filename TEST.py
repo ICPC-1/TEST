@@ -9,18 +9,19 @@ class Test:
         self.tests_dir = tests_dir
         self.mode = mode
         self.testsList = []
-        self.scorePerFilePercent = 0
+        self.scorePerTestPercent = 0
+        self.per_testCase_score = 0
 
     def file_exist(self):
         if not os.path.isfile(self.file_path):
             print("file path is not valid")
             sys.exit(1)
 
-        print("filereturn result path is valid")
+        print("file path is valid")
 
-    def is_file_path(self,file_absul_path):
+    def is_file(self,file_absul_path):
 
-        if not os.path.isfile(file_absul_path):
+        if os.path.isfile(file_absul_path):
             return True
         return False
 
@@ -28,11 +29,11 @@ class Test:
 
         for file_name in os.listdir(self.tests_dir):
 
-            if not is_file_path(os.path.join(self.tests_dir,file_name)):
+            if not self.is_file(os.path.join(self.tests_dir,file_name)):
                 print(f"there is a directory in path you specify named ( {file_name} ) but i think must all be .in or .ans files")
                 continue
 
-            if not (file_name.endswith(".ans") or file_name.endswith(".in")):
+            if not (file_name.endswith('.ans') or file_name.endswith('.in')):
                 print("in the test case directory you specifiy there is at list a file with invalid format please check the path and return to the run the TEST file")
                 sys.exit(1)
 
@@ -65,8 +66,7 @@ class Test:
         
         for file_name in files:
 
-            if not is_file_path(os.path.join(self.tests_dir,file_name)):
-                print(f"there is a directory in path you specify named ( {file_name} ) but i think must all be .in or .ans files")
+            if not self.is_file(os.path.join(self.tests_dir,file_name)):
                 continue
 
             base_name, extension = os.path.splitext(file_name)
@@ -83,16 +83,59 @@ class Test:
         result = [pair for pair in file_pairs.values() if all(pair)]
         self.testsList = result
 
+    def find_per_testCase_score(self):
+        testListLen=len(self.testsList)
+        self.scorePerTestPercent=round(100/testListLen,2)
 
+    def readFile(self,file_path):
 
-    #     # second find that each of the files checking have what score for sum them and the reult be 100 percent
-    #     # third read the input file and answer file and run the code and see the output of the code and see is the output same as the .ans file or not
-    #     # do this with all the files in the array
-    #     # this time that must check the if the mode is DEBUG or TOTAL 
-    #     #       TOTAL : give just a percent that is reslt of calculate all the files
-    #     #       DEBUG : give one by one of the files ok with green and red with no in this format 
-    #     #       for ok : green [ test name : ok ]
-    #     #   for not ok : red [test name : not ok]
+        file = open(file_path,'r')
+        try:
+            content = file.read()
+        finally:
+            file.close()
+        return content
+        
+    def testPass(self,inputFilePath,ansewrFilePath)
+        input = readFile(inputFilePath)
+        answer = readFile(ansewrFilePath)
+        process = subprocess.run(["python3",self.file_path,input], capture_ouput = True, text = True)
+        ouput = process.stdout.strip()
+        if output ==  input :
+            return True
+        return False 
+
+    def test_state(self, file_name,state):
+        if self.mode == "TOTAL":
+            return
+        base_name, extension = os.path.splitext(file_name)
+
+        if state == "fail":
+            print(f"\033[91m{base_name} : fail\033[0m")
+        else:
+            print(f"\033[92m{base_name} : success\033[0m")
+
+    def write_final_score(self,final_score):
+        print("#####################################################")
+        if final_score < 50:
+            print(f"\033[91m final score: {final_score} : fail\033[0m")
+        if final_score >= 50 and final_score != 100 :
+            print(f"\033[92mfinal score: {base_name} : not bad\033[0m")
+        if final_score == 100:
+            print(f"\033[92mfinal score: {base_name} : done bravo bro\033[0m")
+        print("#####################################################")
+
+    def test(self):
+        final_score = 0
+        for test in self.testsList:
+            if testPass(test[0],[test[1]]):
+                final_score += self.per_testCase_score
+                test_state(test[0],"success")
+            else:
+                test_state(test[0],"fail")
+                
+        write_final_score(final_score)
+
 
 
     @classmethod
@@ -110,5 +153,7 @@ def main():
     test = Test.createClass() 
     test.validate_arguments()
     test.get_in_ans_pairs()
+    test.find_per_testCase_score()
+    test.test()
 
 main()
